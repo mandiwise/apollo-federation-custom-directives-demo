@@ -1,0 +1,25 @@
+{
+  "name": "apollo-federation-custom-directives-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently -k npm:dev:*",
+    "dev:films": "nodemon -r esm ./films/index.js",
+    "dev:people": "nodemon -r esm ./people/index.js",
+    "dev:gateway": "wait-on tcp:4001 tcp:4002 && nodemon -r esm ./index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/federation": "^0.18.0",
+    "@apollo/gateway": "^0.18.0",
+    "apollo-server": "^2.16.0",
+    "concurrently": "^5.2.0",
+    "esm": "^3.2.25",
+    "graphql": "^15.3.0",
+    "nodemon": "^2.0.4",
+    "wait-on": "^5.1.0"
+  }
+}
