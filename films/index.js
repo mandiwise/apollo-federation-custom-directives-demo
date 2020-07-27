@@ -1,16 +1,20 @@
-import { ApolloServer, gql } from "apollo-server";
+import { ApolloServer, gql, SchemaDirectiveVisitor } from "apollo-server";
 import { buildFederatedSchema } from "@apollo/federation";
 
 import { films } from "../data.js";
+import FormattableDateDirective from "../shared/FomattableDateDirective";
 
 const port = 4002;
 
 const typeDefs = gql`
+  directive @date(defaultFormat: String = "mmmm d, yyyy") on FIELD_DEFINITION
+
   type Film {
     id: ID!
     title: String
     actors: [Person]
     director: Person
+    releaseDate(format: String): String @date(defaultFormat: "shortDate")
   }
 
   extend type Person @key(fields: "id") {
@@ -54,9 +58,11 @@ const resolvers = {
   }
 };
 
-const server = new ApolloServer({
-  schema: buildFederatedSchema([{ typeDefs, resolvers }])
-});
+const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
+const directives = { date: FormattableDateDirective };
+SchemaDirectiveVisitor.visitSchemaDirectives(schema, directives);
+
+const server = new ApolloServer({ schema });
 
 server.listen({ port }).then(({ url }) => {
   console.log(`Films service ready at ${url}`);
