@@ -17,6 +17,7 @@
     "@apollo/gateway": "^0.18.0",
     "apollo-server": "^2.16.0",
     "concurrently": "^5.2.0",
+    "dateformat": "^3.0.3",
     "esm": "^3.2.25",
     "graphql": "^15.3.0",
     "nodemon": "^2.0.4",
