@@ -2,11 +2,14 @@ import { ApolloServer, gql, SchemaDirectiveVisitor } from "apollo-server";
 import { buildFederatedSchema } from "@apollo/federation";
 
 import { films } from "../data.js";
+import AllCapsTitleDirective from "../shared/AllCapsTitleDirective";
 import FormattableDateDirective from "../shared/FomattableDateDirective";
 
 const port = 4002;
 
 const typeDefs = gql`
+  directive @allCapsTitle on FIELD_DEFINITION
+
   directive @date(defaultFormat: String = "mmmm d, yyyy") on FIELD_DEFINITION
 
   type Film {
@@ -20,7 +23,7 @@ const typeDefs = gql`
   extend type Person @key(fields: "id") {
     id: ID! @external
     appearedIn: [Film]
-    directed: [Film]
+    directed: [Film] @allCapsTitle
   }
 
   extend type Query {
@@ -59,7 +62,10 @@ const resolvers = {
 };
 
 const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
-const directives = { date: FormattableDateDirective };
+const directives = {
+  date: FormattableDateDirective,
+  allCapsTitle: AllCapsTitleDirective
+};
 SchemaDirectiveVisitor.visitSchemaDirectives(schema, directives);
 
 const server = new ApolloServer({ schema });
